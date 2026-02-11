@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💌</text></svg>">
+    <title>Para Cintia ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Simple, static gradient is much faster */
+            --bg-gradient: linear-gradient(135deg, #fff0f5 0%, #ffe6e6 100%);
+            --envelope-color: #ff3333;
+            --envelope-flap: #cc0000;
+            --heart-color: #ff0000;
+            --text-color: #4a0e0e;
+            --paper-color: #fffbf0;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Dancing Script', cursive;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: none;
+        }
+
+        /* Container - Removed 3D perspective to save resources */
+        .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        /* Simple hover effect instead of complex parallax */
+        .envelope-wrapper:active {
+            transform: scale(0.95);
+        }
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: var(--envelope-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: visible;
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid var(--envelope-flap);
+            transform-origin: top;
+            transition: transform 0.6s 0.5s ease-in-out, z-index 0.6s 0.5s;
+            z-index: 5;
+        }
+
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 200px solid #ff4d4d;
+            z-index: 3;
+        }
+
+        .heart-seal {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.5rem;
+            color: #d60000;
+            z-index: 10;
+            transition: opacity 0.4s;
+            cursor: pointer;
+            /* CPU efficient animation */
+            animation: pulse-seal 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-seal {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        .envelope.open .heart-seal {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .expanded-letter-view {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 85vw;
+            max-width: 500px;
+            height: 70vh;
+            background: #fff;
+            border: 2px solid #ffe6e6;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 100;
+            transition: all 0.5s ease-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .expanded-letter-view.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .paper-content h1 {
+            color: #d43f3f;
+            margin-bottom: 15px;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .paper-content p {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            color: #5c2b2b;
+            text-align: center;
+        }
+
+        .instruction-text {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+            color: #d43f3f;
+            font-size: 1.2rem;
+            font-family: 'Pacifico', cursive;
+            animation: fadeInOut 3s infinite;
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Floating hearts css only - much lighter than canvas */
+        .bg-heart {
+            position: absolute;
+            top: -10vh;
+            color: rgba(255, 0, 0, 0.2);
+            font-size: 2rem;
+            animation: float-up 10s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes float-up {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CSS only background hearts -->
+    <div id="bg-hearts-container"></div>
+
+    <div class="container" id="main-container">
+        <div class="envelope-wrapper" id="envelope-wrapper">
+            <div class="envelope" id="envelope">
+                <div class="flap"></div>
+                <div class="pocket"></div>
+                <div class="heart-seal">❤️</div>
+            </div>
+            <div class="instruction-text">
+                Para Cintia <br>
+                <span style="font-size: 1rem;">(Toca el corazón)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- The actual letter content overlay -->
+    <div class="expanded-letter-view" id="final-letter">
+        <div class="paper-content">
+            <h1>Mi querida Cintia,</h1>
+            <p id="typewriter-text"></p>
+            <div style="margin-top: 30px; text-align: center;">
+                <span style="font-size: 3rem;">💌</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Use CSS animations instead of Canvas for background
+        const bgContainer = document.getElementById('bg-hearts-container');
+        const heartSymbols = ["❤️", "💖", "🌸"];
+
+        // Create only 15 static hearts for background
+        for (let i = 0; i < 15; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('bg-heart');
+            heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            heart.style.opacity = Math.random() * 0.3 + 0.1;
+            bgContainer.appendChild(heart);
+        }
+
+        // Letter Interaction
+        const finalLetter = document.getElementById('final-letter');
+        const typeTextElement = document.getElementById('typewriter-text');
+        const envelopeWrapper = document.getElementById('envelope-wrapper');
+        const envelope = document.getElementById('envelope');
+
+        let isOpen = false;
+        const message = "Cintia,\n\nDicen que las mejores cosas de la vida simplemente suceden. Y tú eres lo mejor que me ha pasado.\n\nCada día a tu lado es una nueva aventura llena de sonrisas. Gracias por iluminar mi mundo.\n\nTe quiero con todo mi corazón.";
+
+        function openLetter() {
+            if (isOpen) return;
+            isOpen = true;
+
+            envelope.classList.add('open');
+
+            // Simple timeout flow
+            setTimeout(() => {
+                finalLetter.classList.add('active');
+
+                // Simple typewriter
+                let i = 0;
+                typeTextElement.innerHTML = "";
+                const typeInterval = setInterval(() => {
+                    if (i < message.length) {
+                        if (message.charAt(i) === '\n') {
+                            typeTextElement.innerHTML += '<br>';
+                        } else {
+                            typeTextElement.innerHTML += message.charAt(i);
+                        }
+                        i++;
+                    } else {
+                        clearInterval(typeInterval);
+                    }
+                }, 40);
+
+            }, 800);
+        }
+
+        // Simple event listeners
+        envelopeWrapper.addEventListener('click', openLetter);
+        envelopeWrapper.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            openLetter();
+        }, { passive: false });
+
+    </script>
+</body>
+
+</html>
